@@ -23,6 +23,11 @@
 
 #if defined(USBCON)
 
+#ifdef _VARIANT_ARDUINO_DUE_X_
+#define USB_SendControl USBD_SendControl
+#define USB_Send USBD_Send
+#endif
+
 DynamicHID_& DynamicHID()
 {
 	static DynamicHID_ obj;
@@ -65,23 +70,14 @@ int DynamicHID_::getDescriptor(USBSetup& setup)
 	return total;
 }
 
-void DynamicHID_::setShortName(char* name) {
-  strlcpy(serialname, name, ISERIAL_MAX_LEN);
-}
-
 uint8_t DynamicHID_::getShortName(char *name)
 {
-	// Up to 20 char (null char included)
-	// Example from Arduino:
-	/*
 	name[0] = 'H';
 	name[1] = 'I';
 	name[2] = 'D';
 	name[3] = 'A' + (descriptorSize & 0x0F);
 	name[4] = 'A' + ((descriptorSize >> 4) & 0x0F);
-	*/
-    int len = strlcpy(name, serialname, ISERIAL_MAX_LEN);
-	return len;
+	return 5;
 }
 
 void DynamicHID_::AppendDescriptor(DynamicHIDSubDescriptor *node)

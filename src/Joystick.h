@@ -21,16 +21,20 @@
 #ifndef JOYSTICK_h
 #define JOYSTICK_h
 
-#include "DynamicHID/DynamicHID.h"
-
 #if ARDUINO < 10606
 #error The Joystick library requires Arduino IDE 1.6.6 or greater. Please update your IDE.
 #endif // ARDUINO < 10606
 
 #if ARDUINO > 10606
+  #include "DynamicHID/DynamicHID.h"
+  #ifdef ARDUINO_UNOR4_MINIMA
+  #define DynamicHID HID
+  #define _USING_DYNAMIC_HID
+  #else
 #if !defined(USBCON)
 #error The Joystick library can only be used with a USB MCU (e.g. Arduino Leonardo, Arduino Micro, etc.).
 #endif // !defined(USBCON)
+  #endif
 #endif // ARDUINO > 10606
 
 #if !defined(_USING_DYNAMIC_HID)
