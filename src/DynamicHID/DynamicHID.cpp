@@ -174,6 +174,11 @@ DynamicHID_::DynamicHID_(void) : PluggableUSBModule(1, 1, epType),
 
 int DynamicHID_::begin(void)
 {
+	serialname[0] = 'H';
+	serialname[1] = 'I';
+	serialname[2] = 'D';
+	serialname[3] = 'A' + (descriptorSize & 0x0F);
+	serialname[4] = 'A' + ((descriptorSize >> 4) & 0x0F);
 	return 0;
 }
 
