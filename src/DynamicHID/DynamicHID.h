@@ -37,6 +37,7 @@
   #define EPTYPE_DESCRIPTOR_SIZE      uint32_t
   #include "USB/PluggableUSB.h"
 #else
+  #define EPTYPE_DESCRIPTOR_SIZE      uint8_t
   #include "PluggableUSB.h"
 #endif
 
