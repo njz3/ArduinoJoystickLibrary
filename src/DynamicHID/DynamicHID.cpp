@@ -21,7 +21,14 @@
 
 #include "DynamicHID.h"
 
+#if !defined(ARDUINO_SAMD_VARIANT_COMPLIANCE)
+
 #if defined(USBCON)
+
+#ifdef _VARIANT_ARDUINO_DUE_X_
+#define USB_SendControl USBD_SendControl
+#define USB_Send USBD_Send
+#endif
 
 DynamicHID_& DynamicHID()
 {
@@ -171,3 +178,5 @@ int DynamicHID_::begin(void)
 }
 
 #endif /* if defined(USBCON) */
+
+#endif // !defined(!defined(ARDUINO_SAMD_VARIANT_COMPLIANCE))

@@ -20,7 +20,7 @@
 
 #include "Joystick.h"
 
-#if defined(_USING_DYNAMIC_HID)
+#if defined(_USING_DYNAMIC_HID) || defined(_USING_HID)
 
 #define JOYSTICK_REPORT_ID_INDEX 7
 #define JOYSTICK_AXIS_MINIMUM 0
@@ -437,15 +437,16 @@ Joystick_::Joystick_(
 	memcpy(customHidReportDescriptor, tempHidReportDescriptor, hidReportDescriptorSize);
 	
 	// Register HID Report Description
-	#ifdef ARDUINO_UNOR4_MINIMA
-	HIDSubDescriptor *node = new HIDSubDescriptor(customHidReportDescriptor, hidReportDescriptorSize);
-    #else
+	#if defined(_USING_DYNAMIC_HID)
 	DynamicHIDSubDescriptor *node = new DynamicHIDSubDescriptor(customHidReportDescriptor, hidReportDescriptorSize, false);
+	DynamicHID().AppendDescriptor(node);
 	char name[] = "JOYSTICK_0";
 	name[strlen(name)-1] = '0' + (hidReportId-2);
 	DynamicHID().setShortName(name);
+    #else
+	HIDSubDescriptor *node = new HIDSubDescriptor(customHidReportDescriptor, hidReportDescriptorSize);
+	HID().AppendDescriptor(node);
     #endif
-	DynamicHID().AppendDescriptor(node);
 	
     // Setup Joystick State
 	if (buttonCount > 0) {
@@ -683,7 +684,11 @@ void Joystick_::sendState()
 	index += buildAndSetSimulationValue(_includeSimulatorFlags & JOYSTICK_INCLUDE_BRAKE, _brake, _brakeMinimum, _brakeMaximum, &(data[index]));
 	index += buildAndSetSimulationValue(_includeSimulatorFlags & JOYSTICK_INCLUDE_STEERING, _steering, _steeringMinimum, _steeringMaximum, &(data[index]));
 
+	#if defined(_USING_DYNAMIC_HID)
 	DynamicHID().SendReport(_hidReportId, data, _hidReportSize);
+	#else
+	HID().SendReport(_hidReportId, data, _hidReportSize);
+	#endif
 }
 
 #endif
